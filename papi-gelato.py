@@ -1,181 +1,176 @@
+aantalDict = {"bollen" : 0, "hoorntjes" : 0, "bakjes" : 0, "slagroom" : 0, "sprinkels" : 0, "caramelsaushoorn" : 0, "caramelsausbak" : 0, "liter" : 0}
+prijsDict = {"bollen" : 0.95, "hoorntjes" : 1.25, "bakjes" : 0.75, "slagroom" : 0.50, "sprinkels" : 0.30, "caramelsaushoorn" : 0.60, "caramelsausbak" : 0.90, "liter" : 9.80}
+
+
+# print tekst als er een antwoord wordt gegeven dat niet klopt
 def showNotunderstood():
-    print("Sorry dat is geen optie die we aanbieden...")
+    print("Sorry dat begrijp ik niet...")
 
 
-programcompletion = False
-phase1 = False
-phase2 = False
-phase3 = False
-toppingphase = False
-flavourquestions = False
-bussinesreasons = False
-bolnummer = 1
-liternummer = 1
-totaalaantalbollen = 0
-aantalhoorntjes = 0
-aantalbakjes = 0
-aantalslagroomtoppings = 0
-aantalsprinkelstoppings = 0
-aantalcaramelsaushoorntoppings = 0
-aantalcaramelsausbaktoppings = 0
-caramelsaushoornprijs = 0
-caramelsausbakprijs = 0
-prijsbollen = 0
-prijshoorntjes = 0
-prijsbakjes = 0
+# Hiermee kan je een aantal witregels laten ontstaan
+def unnecesarySpaces(ammoutSpaces):
+    for x in range(ammoutSpaces):
+        print()
 
-print("Welkom bij Papi Gelato")
 
-while programcompletion == False:
-    while bussinesreasons == False:
-        bussinesorder = str(input("Bent u 1) particulier of 2) zakelijk? "))
-        if bussinesorder == "1" or bussinesorder == "2":
-            bussinesreasons = True
+# Vraag naar reden voor gebruik
+def askReason():
+    reasons = False
+    while reasons == False:
+        bussinesorder = input("Bent u 1) particulier of 2) zakelijk? ")
+        if bussinesorder == "1":
+            reasons = True
+            askBollen()
+        elif bussinesorder == "2":
+            reasons = True
+            bussinesOrder()
         else:
             showNotunderstood()
     
-    if bussinesorder == "2":
-        hoeveelliter = int(input("Hoeveel liter ijs wilt u? "))
 
-        while liternummer <= hoeveelliter:
-            litersmaak = input("Welke smaak wilt u voor liter nummer " + str(liternummer) + "? A) Aardbei, C) Chocolade of V) Vanille? ")
-
-            if litersmaak == "A" or litersmaak == "C" or litersmaak == "V":
-                liternummer = liternummer + 1
-            else:
-                showNotunderstood()
+# Vraagt hoeveel liter ijs
+def bussinesOrder():
+    global aantalDict
+    hoeveelliter = int(input("Hoeveel liter ijs wilt u? "))
+    literCount = 1
+    while literCount <= hoeveelliter:
+        litersmaak = input("Welke smaak wilt u voor liter nummer " + str(literCount) + "? A) Aardbei, C) Chocolade of V) Vanille? ")
+        if litersmaak == "A" or litersmaak == "C" or litersmaak == "V":
+            literCount += 1
         else:
-            programcompletion = True
-            print("")
+            showNotunderstood()
+    aantalDict["liter"] = hoeveelliter
+    orderLabel("bussines")
 
-    elif bussinesorder == "1":
-        while phase1 == False:
-            aantalbollen = int(input("Hoeveel bolletjes wilt u? "))
-            totaalaantalbollen = totaalaantalbollen + aantalbollen
-            if aantalbollen == 1:
-                enkelofmeerderebollen = " bolletje"
-            elif aantalbollen >= 2:
-                enkelofmeerderebollen = " bolletjes"
-            
+
+# Vraagt naar aantal bollen en vraagt ook naar hoorntje of bakje
+def askBollen():
+    global aantalDict
+    bollenVraag = False
+    hoornofbak = ""
+    while bollenVraag == False:
+        aantalbollen = input("Hoeveel bolletjes wilt u? ")
+        if aantalbollen.isdigit() == True:
+            aantalbollen = int(aantalbollen)
+            aantalDict["bollen"] += aantalbollen       
             if aantalbollen >= 1 and aantalbollen <= 3:
-                phase1 = True
-                print("")
-                while phase3 == False:
-                    askHoornofbak = str(input("Wilt u deze " + str(aantalbollen) + enkelofmeerderebollen + " in A) een hoorntje of B) een bakje? "))
-                    if askHoornofbak == "A":
-                        hoornofbak = "hoorntje"
-                        aantalhoorntjes = aantalhoorntjes + 1
-                    elif askHoornofbak == "B":
-                        hoornofbak = "bakje"
-                        aantalbakjes = aantalbakjes + 1
+                bollenVraag = True
+                unnecesarySpaces(1)
+                askhoornofbak = False
+                while askhoornofbak == False:
+                    askWhich = input("Wilt u dit in A) een hoorntje of B) een bakje? ")
+                    if askWhich == "A":
+                        aantalDict["hoorntjes"] += 1
+                        hoornofbak = "hoorn"
+                    elif askWhich == "B":
+                        aantalDict["bakjes"] += 1
+                        hoornofbak = "bak"
                     else:
                         showNotunderstood()
-                    
-                    if askHoornofbak == "A" or askHoornofbak == "B":
-                        phase3 = True
-                        print("")
-                    else:
-                        print("")
-            
+                    if askWhich == "A" or askWhich == "B":
+                        askhoornofbak = True        
             elif aantalbollen >= 4 and aantalbollen <= 8:
-                print("Dan krijgt u van mij een bakje met " + str(aantalbollen) + str(enkelofmeerderebollen))
-                print("")
-                hoornofbak = "bakje"
-                aantalbakjes = aantalbakjes + 1
-                phase1 = True
+                print("Dan krijgt u van mij een bakje met " + str(aantalbollen) + " bolletjes.")
+                unnecesarySpaces(1)
+                aantalDict["bakjes"] += 1
+                hoornofbak = "bak"
+                bollenVraag = True
             elif aantalbollen > 8:
                 print("Sorry zulke grote bakken hebben we niet")
             else:
                 showNotunderstood()
-            
-        while flavourquestions == False:
-            if bolnummer <= int(aantalbollen):
-                askflavour = input("Welke smaak wilt u voor bolletje nummer " + str(bolnummer) + "? A) Aardbei, C) Chocolade of V) Vanille? ")
-         
-                if askflavour == "A" or askflavour == "C" or askflavour == "V":
-                    bolnummer = bolnummer + 1
-                else:
-                    showNotunderstood()
-            else:
-                flavourquestions = True
-                print("")
+        else:
+            showNotunderstood()
+    askFlavours(aantalbollen, hoornofbak)
 
-        while toppingphase == False:
-            askTopping = input("Wat voor topping wilt u: A) Geen, B) Slagroom, C) Sprinkels of D) Caramel Saus? ")
-            if askTopping == "A":
-                None
-            elif askTopping == "B":
-                aantalslagroomtoppings = aantalslagroomtoppings + 1
-            elif askTopping == "C":
-                aantalsprinkelstoppings = aantalsprinkelstoppings + aantalbollen
-            elif askTopping == "D":
-                if hoornofbak == "hoorntje":
-                    aantalcaramelsaushoorntoppings = aantalcaramelsaushoorntoppings + 1
-                elif hoornofbak == "bakje":
-                    aantalcaramelsausbaktoppings = aantalcaramelsausbaktoppings + 1
+
+# Vraagt naar smaak per bol (Smaken zijn allemaal dezelfde prijs)
+def askFlavours(aantalbollen, hoornofbak): 
+    bolnummer = 1
+    flavourquestions = False      
+    while flavourquestions == False:
+        if bolnummer <= int(aantalbollen):
+            askflavour = input("Welke smaak wilt u voor bolletje nummer " + str(bolnummer) + "? A) Aardbei, C) Chocolade of V) Vanille? ")       
+            if askflavour == "A" or askflavour == "C" or askflavour == "V":
+                bolnummer += 1
             else:
                 showNotunderstood()
-            
-            if askTopping == "A" or askTopping == "B" or askTopping == "C" or askTopping == "D":
-                toppingphase = True
-                print("")
-    
-
-        while phase2 == False:
-            yesorno = str(input("Hier is uw " + hoornofbak + " met " + str(aantalbollen) + enkelofmeerderebollen + ". Wilt u nog meer bestellen? (Y/N) "))
-            if yesorno == "Y":
-                print("")
-                print("")
-                phase2 = True
-            elif yesorno == "N":
-                programcompletion = True
-                phase2 = True
-                print("")
-                print("")
-            else:
-                showNotunderstood()
-        if programcompletion == False:
-            phase1 = False
-            flavourquestions = False
-            toppingphase = False
-            phase3 = False
-            bolnummer = 1
-            phase2 = False
+        else:
+            flavourquestions = True
+            unnecesarySpaces(1)
+    askToppings(aantalbollen, hoornofbak)
 
 
-if programcompletion == True:
-    if bussinesorder == "1":
-        prijsbollen = totaalaantalbollen * 0.95
-        prijshoorntjes = aantalhoorntjes * 1.25
-        prijsbakjes = aantalbakjes * 0.75
-        prijsslagroomtoppings = aantalslagroomtoppings * 0.50
-        prijssprinkelstoppings = aantalsprinkelstoppings * 0.30
-        caramelsaushoornprijs = aantalcaramelsaushoorntoppings * 0.60
-        caramelsausbakprijs = aantalcaramelsausbaktoppings * 0.90
-    elif bussinesorder == "2":
-        literprijs = hoeveelliter * 9.80
-        btw = literprijs / 100 * 6
+# Vraagt naar topping
+def askToppings(aantalbollen, hoornofbak):
+    global aantalDict
+    toppingphase = False
+    while toppingphase == False:
+        askTopping = input("Wat voor topping wilt u: A) Geen, B) Slagroom, C) Sprinkels of D) Caramel Saus? ")
+        if askTopping == "A":
+            None
+        elif askTopping == "B":
+            aantalDict["slagroom"] += 1
+        elif askTopping == "C":
+            aantalDict["sprinkels"] += aantalbollen
+        elif askTopping == "D":
+            if hoornofbak == "hoorn":
+                aantalDict["caramelsaushoorn"] += 1
+            elif hoornofbak == "bak":
+                aantalDict["caramelsausbak"] += 1
+        else:
+            showNotunderstood()
+
+        if askTopping == "A" or askTopping == "B" or askTopping == "C" or askTopping == "D":
+            toppingphase = True
+            unnecesarySpaces(1)
+    askMore(aantalbollen, hoornofbak)
+
+
+# Vraagt of er meer bestelt moet worden (Alleen particulier)
+def askMore(aantalbollen, hoornofbak):
+    needMore = False
+    while needMore == False:
+        yesorno = str(input("Hier is uw " + hoornofbak + " met " + str(aantalbollen) + " aantal bollen. Wilt u nog meer bestellen? (Y/N) "))
+        if yesorno == "Y":
+            unnecesarySpaces(2)
+            needMore = True
+            askBollen()
+        elif yesorno == "N":
+            unnecesarySpaces(2)
+            needMore = True
+            orderLabel("personal")
+        else:
+            showNotunderstood()
+
+
+def orderLabel(kindLabel):
     print('---------["Papi Gelatto"]---------')
-    print("")
-    if bussinesorder == "1":
-        print("Bolletje     " + str(totaalaantalbollen) + " x €0.95 = €" + str(round(prijsbollen, 3)))
-        if aantalhoorntjes >= 1:
-            print("horrentje    " + str(aantalhoorntjes) + " x €1.25 = €" + str(round(prijshoorntjes, 2)))
-        if aantalbakjes >= 1:
-            print("bakje        " + str(aantalbakjes) + " x €0.75 = €" + str(round(prijsbakjes, 2)))
-        if aantalslagroomtoppings >= 1:
-            print("slagroom     " + str(aantalslagroomtoppings) + " x €0.50 = €" + str(round(prijsslagroomtoppings, 2)))
-        if aantalsprinkelstoppings >= 1:
-            print("sprinkels    " + str(aantalsprinkelstoppings) + " x €0.30 = €" + str(round(prijssprinkelstoppings, 2)))
-        if aantalcaramelsaushoorntoppings >= 1:
-            print("caramel saus " + str(aantalcaramelsaushoorntoppings) + " x €0.60 = €" + str(round(caramelsaushoornprijs, 2)))
-        if aantalcaramelsausbaktoppings >= 1:
-            print("caramel saus " + str(aantalcaramelsausbaktoppings) + " x €0.90 = €" + str(round(caramelsausbakprijs, 2)))
-        print("                      ---------- +")
-        totaalprijs = prijsbollen + prijshoorntjes + prijsbakjes + prijsslagroomtoppings + prijssprinkelstoppings + caramelsaushoornprijs + caramelsausbakprijs
+    unnecesarySpaces(1) 
+    notationList = ["bolletje              ", "horrentje             ", "bakje                 ", "slagroom              ", "sprinkels             ", "caramel saus (hoorn)  ", "caramel saus (bak)    "]
+    dictKeyList = list(aantalDict.keys())
+    if kindLabel == "personal":
+        totaalprijs = 0
+        for index, notationItem in enumerate(notationList):
+            aantal = aantalDict.get(dictKeyList[index])
+            prijs = prijsDict.get(dictKeyList[index])
+            aantalprijs = aantal * prijs
+            totaalprijs += aantalprijs   
+            if aantal >= 1:
+                print(notationItem + str(aantal) + " x " + str(prijs) + " = €" + str(round(aantalprijs, 2)))
+        print("                      ------------ +")
         print("totaal                 = €" + str(round(totaalprijs, 2)))
-    if bussinesorder == "2":
-        print("Liter       " + str(hoeveelliter) + " x €9.80 = " + str(round(literprijs, 2)))
-        print("                      ---------- +")
-        print("Totaal                = " + str(round(literprijs, 2)))
-        print("BTW (6%)              = " + str(round(btw, 2)))
+    elif kindLabel == "bussines":
+        notationItem = "Liter                 "
+        aantal = aantalDict.get("liter")
+        prijs = prijsDict.get("liter")
+        totaalprijs = aantal * prijs
+        btw = totaalprijs / 100 * 6
+        print(notationItem + str(aantal) + " x " + str(prijs) + " = €" + str(round(totaalprijs, 2)))
+        print("                      ------------ +")
+        print("Totaal                = €" + str(round(totaalprijs, 2)))
+        print("BTW (6%)              = €" + str(round(btw, 2)))
+
+
+print("Welkom bij Papi Gelato")
+askReason()
